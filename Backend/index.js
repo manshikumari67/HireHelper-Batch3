@@ -3,21 +3,48 @@ const app = express();
 const dotenv = require("dotenv");
 const cors = require("cors");
 const database = require("./config/database");
+const fileUpload = require("express-fileupload");
 
+// ================= LOAD ENV =================
 dotenv.config();
+
+// ================= CONNECT DATABASE =================
 database.connect();
 
-const PORT = process.env.PORT || 4000;
-
+// ================= MIDDLEWARE =================
 app.use(cors());
+
+
+// ================= FILE UPLOAD =================
+app.use(
+ fileUpload({
+  useTempFiles: true,
+  tempFileDir: "/tmp/",
+ })
+);
+
 app.use(express.json());
 
-app.use("/api/auth", require("./routes/auth"));
+// ================= CLOUDINARY =================
+const cloudinary = require("./config/cloudinary");
+cloudinary.cloudinaryConnect();
 
-app.get("/", (req, res) => {
-  res.send("API is running...");
+// ================= ROUTES =================
+// Auth routes
+app.use("/api/auth",require("./routes/auth"));
+
+// Task routes (Milestone-2)
+app.use("/api/tasks",require("./routes/taskRoutes"));
+
+// ================= DEFAULT ROUTE =================
+app.get("/",  (req, res) => {
+  res.send("HireHelper API is running");
 });
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+// ================= START SERVER =================
+const PORT = process.env.PORT || 4000;
+app.listen(PORT,() => {
+  console.log(
+    `Server running on port ${PORT}`
+  );
 });
