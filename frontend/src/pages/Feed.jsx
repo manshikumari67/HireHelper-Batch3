@@ -15,12 +15,13 @@ export default function Feed() {
       try {
         const res = await API.get("/tasks/allTasks");
         setTasks(res.data.tasks || []);
-      } catch (err) {
+      } catch {
         toast.error("Failed to load tasks");
       } finally {
         setLoading(false);
       }
     };
+
     fetchTasks();
   }, []);
 
@@ -33,7 +34,7 @@ export default function Feed() {
       setRequestedTasks((prev) => [...prev, taskId]);
       toast.success("Request sent");
 
-    } catch (err) {
+    } catch {
       toast.error("Request failed");
     } finally {
       setRequestingId(null);
@@ -41,39 +42,33 @@ export default function Feed() {
   };
 
   return (
-    <div className="p-6 "> 
+    <div className="p-6">
 
-      {/* HEADER */}
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">Task Feed</h1>
+        <h1 className="text-2xl font-bold">Task Feed</h1>
         <p className="text-gray-500 text-sm">
           Browse tasks and send requests
         </p>
       </div>
 
-      {/* LOADING */}
       {loading && <p className="text-center mt-20 text-gray-500">Loading...</p>}
 
-      {/* EMPTY */}
       {!loading && tasks.length === 0 && (
         <p className="text-center mt-20 text-gray-500">No tasks available</p>
       )}
 
-      {/* GRID */}
-      {!loading && tasks.length > 0 && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          {tasks.map((task) => (
-            <TaskCard
-              key={task._id}
-              task={task}
-              showRequest
-              onRequest={handleRequest}
-              requestingId={requestingId}
-              isRequested={requestedTasks.includes(task._id)}
-            />
-          ))}
-        </div>
-      )}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        {tasks.map((task) => (
+          <TaskCard
+            key={task._id}
+            task={task}
+            showRequest
+            onRequest={handleRequest}
+            requestingId={requestingId}
+            isRequested={requestedTasks.includes(task._id)}
+          />
+        ))}
+      </div>
 
     </div>
   );

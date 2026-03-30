@@ -167,3 +167,91 @@ exports.getDashboardData = async (req, res) => {
     });
   }
 };
+
+
+// -----------------------Update Task-------------------------
+
+exports.updateTask = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    let updateData = req.body;
+
+    // 🔥 IMAGE HANDLE
+    if (req.files && req.files.picture) {
+      const file = req.files.picture;
+
+      const response = await uploadImageToCloudinary(file, "hirehelper");
+      updateData.picture = response.secure_url;
+    }
+
+    const updatedTask = await Task.findByIdAndUpdate(
+      id,
+      { $set: updateData }, // 🔥 IMPORTANT FIX
+      { new: true }
+    );
+
+    res.status(200).json({
+      success: true,
+      task: updatedTask,
+    });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: "Update failed",
+    });
+  }
+};
+
+// --------------------Delete Task -----------------------
+
+exports.deleteTask = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    await Task.findByIdAndDelete(id);
+
+    res.status(200).json({
+      success: true,
+      message: "Task deleted",
+    });
+
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+
+// ------------------- Mark Completed -----------------------
+
+exports.markTaskCompleted = async (req, res) => {
+  try {
+    const { taskId } = req.params;
+
+    const task = await Task.findById(taskId);
+
+    if (!task) {
+      return res.status(404).json({ message: "Task not found" });
+    }
+
+    if (task.status === "completed") {
+      return res.status(400).json({ message: "Already completed" });
+    }
+
+    task.status = "completed";
+    await task.save();
+
+    res.json({
+      success: true,
+      message: "Completed",
+    });
+
+  } catch {
+    res.status(500).json({ message: "Failed to complete" });
+  }
+};

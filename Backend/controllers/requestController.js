@@ -1,44 +1,15 @@
 const Request = require("../models/Request");
 const Task = require("../models/Task");
-const User = require("../models/User");
-const Notification = require("../models/Notification");
-const AcceptedTask = require("../models/AcceptedTask");
 
-// ------------------------------- SEND REQUEST -------------------------------
-
+// ---------------- SEND REQUEST ----------------
 exports.sendRequest = async (req, res) => {
   try {
     const { task_id } = req.body;
     const requester_id = req.user.id;
 
-    const task = await Task.findById(task_id).select("createdBy");
-
-    if (!task) {
-      return res.status(404).json({
-        success: false,
-        message: "Task not found",
-      });
-    }
-
-    // prevent requesting own task
-    if (task.createdBy.toString() === requester_id) {
-      return res.status(400).json({
-        success: false,
-        message: "You cannot request your own task",
-      });
-    }
-
-    // check duplicate request
-    const existingRequest = await Request.findOne({
-      task_id,
-      requester_id,
-    });
-
-    if (existingRequest) {
-      return res.status(400).json({
-        success: false,
-        message: "Request already sent",
-      });
+    const existing = await Request.findOne({ task_id, requester_id });
+    if (existing) {
+      return res.status(400).json({ message: "Already requested" });
     }
 
     const request = await Request.create({
@@ -46,57 +17,38 @@ exports.sendRequest = async (req, res) => {
       requester_id,
     });
 
-    // create notification for task owner
-    const user = await User.findById(requester_id).select("first_name");
+    res.json({ success: true, request });
 
-    await Notification.create({
-      user_id: task.createdBy,
-      body: `${user?.first_name || "Someone"} requested your task`,
-    });
-
-    res.status(200).json({
-      success: true,
-      message: "Request sent successfully",
-      request,
-    });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
+    res.status(500).json({ message: error.message });
   }
 };
 
-// ------------------------------- GET REQUESTS (OWNER) -------------------------------
-
+// ---------------- GET REQUESTS (OWNER) ----------------
 exports.getRequestsForOwner = async (req, res) => {
   try {
     const user_id = req.user.id;
 
     const tasks = await Task.find({ createdBy: user_id }).select("_id");
-
-    const taskIds = tasks.map((task) => task._id);
+    const taskIds = tasks.map((t) => t._id);
 
     const requests = await Request.find({
       task_id: { $in: taskIds },
     })
-      .populate("requester_id", "first_name last_name profile_picture")
-      .populate("task_id", "title description location start_time end_time picture");
+      .populate("requester_id", "first_name last_name")
+      .populate(
+        "task_id",
+        "title description location start_time end_time picture status"
+      );
 
-    res.status(200).json({
-      success: true,
-      requests,
-    });
+    res.json({ success: true, requests });
+
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
+    res.status(500).json({ message: error.message });
   }
 };
 
-// ------------------------------- MY REQUESTS -------------------------------
-
+// ---------------- MY REQUESTS ----------------
 exports.getMyRequests = async (req, res) => {
   try {
     const requester_id = req.user.id;
@@ -104,142 +56,85 @@ exports.getMyRequests = async (req, res) => {
     const requests = await Request.find({ requester_id })
       .populate({
         path: "task_id",
-        select: "title description location start_time end_time picture createdBy",
+        select:
+          "title description location start_time end_time picture createdBy status",
         populate: {
           path: "createdBy",
-          select: "first_name last_name"
-        }
+          select: "first_name last_name",
+        },
       });
 
-      const validRequests = requests.filter(r => r.task_id !== null);
+    res.json({ success: true, requests });
 
-    res.status(200).json({
-      success: true,
-      requests,
-    });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
+    res.status(500).json({ message: error.message });
   }
 };
 
-// ------------------------------- ACCEPT REQUEST -------------------------------
-
+// ---------------- ACCEPT ----------------
 exports.acceptRequest = async (req, res) => {
   try {
     const { requestId } = req.params;
 
     const request = await Request.findById(requestId);
 
-    if (!request) {
-      return res.status(404).json({
-        success: false,
-        message: "Request not found",
-      });
-    }
-
-    const task = await Task.findById(request.task_id);
-
-    if (task.createdBy.toString() !== req.user.id) {
-      return res.status(403).json({
-        success: false,
-        message: "Unauthorized action",
-      });
-    }
-
-    // check if task already accepted
-    const alreadyAccepted = await AcceptedTask.findOne({
-      task_id: request.task_id,
-    });
-
-    if (alreadyAccepted) {
-      return res.status(400).json({
-        success: false,
-        message: "Task already assigned",
-      });
-    }
-
     request.status = "accepted";
     await request.save();
 
-    // reject other requests
     await Request.updateMany(
       { task_id: request.task_id, _id: { $ne: requestId } },
       { status: "rejected" }
     );
 
-    // create accepted task entry
-    await AcceptedTask.create({
-      user_id: request.requester_id,
-      task_id: request.task_id,
+    await Task.findByIdAndUpdate(request.task_id, {
+      status: "accepted",
+      helper_id: request.requester_id,
     });
 
-    // improved notification
-    const taskData = await Task.findById(request.task_id).select("title");
+    res.json({ success: true });
 
-    await Notification.create({
-      user_id: request.requester_id,
-      body: `Your request for "${taskData.title}" has been accepted`,
-    });
-
-    res.status(200).json({
-      success: true,
-      message: "Request accepted successfully",
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
+  } catch {
+    res.status(500).json({ message: "Error" });
   }
 };
 
-// ------------------------------- REJECT REQUEST -------------------------------
-
+// ---------------- REJECT ----------------
 exports.rejectRequest = async (req, res) => {
   try {
     const { requestId } = req.params;
 
+    await Request.findByIdAndUpdate(requestId, {
+      status: "rejected",
+    });
+
+    res.json({ success: true });
+
+  } catch {
+    res.status(500).json({ message: "Error" });
+  }
+};
+
+// ---------------- CANCEL ----------------
+exports.cancelRequest = async (req, res) => {
+  try {
+    const { requestId } = req.params;
+    const userId = req.user.id;
+
     const request = await Request.findById(requestId);
 
-    if (!request) {
-      return res.status(404).json({
-        success: false,
-        message: "Request not found",
-      });
+    if (String(request.requester_id) !== String(userId)) {
+      return res.status(403).json({ message: "Not allowed" });
     }
 
-  
-    const task = await Task.findById(request.task_id);
-
-    if (task.createdBy.toString() !== req.user.id) {
-      return res.status(403).json({
-        success: false,
-        message: "Unauthorized action",
-      });
+    if (request.status !== "pending") {
+      return res.status(400).json({ message: "Only pending can cancel" });
     }
 
-    request.status = "rejected";
-    await request.save();
+    await Request.findByIdAndDelete(requestId);
 
-    // improved notification
-    const taskData = await Task.findById(request.task_id).select("title");
+    res.json({ success: true });
 
-    await Notification.create({
-      user_id: request.requester_id,
-      body: `Your request for "${taskData.title}" has been rejected`,
-    });
-
-    res.status(200).json({
-      success: true,
-      message: "Request rejected",
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
+  } catch {
+    res.status(500).json({ message: "Error" });
   }
 };

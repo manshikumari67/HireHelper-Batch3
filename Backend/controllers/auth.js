@@ -1,4 +1,6 @@
-const User = require("../models/user");
+const User = require("../models/User");
+const Task = require("../models/Task");
+const Request = require("../models/Request");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const mailSender = require("../utils/MailSender");
@@ -389,6 +391,45 @@ exports.resetPassword = async (req, res) => {
     return res.status(500).json({
       success: false,
       message: "Error resetting password",
+    });
+  }
+};
+
+
+// ---------------------------------- DELETE ACCOUNT ----------------------------------
+exports.deleteAccount = async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    // 🔥 1. Find user's tasks
+    const userTasks = await Task.find({ createdBy: userId });
+
+    const taskIds = userTasks.map(task => task._id);
+
+    // 🔥 2. Delete all related requests
+    await Request.deleteMany({
+      $or: [
+        { requester_id: userId }, // user ne bheje
+        { task_id: { $in: taskIds } } // user ke tasks pe aaye
+      ]
+    });
+
+    // 🔥 3. Delete user's tasks
+    await Task.deleteMany({ createdBy: userId });
+
+    // 🔥 4. Delete user
+    await User.findByIdAndDelete(userId);
+
+    res.status(200).json({
+      success: true,
+      message: "Account and all data deleted successfully",
+    });
+
+  } catch (error) {
+    console.log("DELETE ACCOUNT ERROR:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to delete account",
     });
   }
 };
