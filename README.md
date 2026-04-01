@@ -1,284 +1,229 @@
-# 🚀 HireHelper-Batch3
+# 🚀 HireHelper – Full Stack Task Hiring Platform
 
-## 💼 HireHelper – Smart Task Hiring Platform
+HireHelper is a **full-stack web application** that connects users who need help with everyday tasks to people willing to complete them.
 
-HireHelper is a full-stack web application designed to connect users who need help with everyday tasks to those willing to complete them. The platform enables seamless task creation, request handling, and real-time updates, ensuring a smooth and efficient user experience.
-
-The goal of HireHelper is to simplify task outsourcing by providing a structured system where users can post tasks, receive help requests, manage workflows, and stay updated through notifications.
-
----
-
-## 📸 Platform Overview
-
-![Landing](./screenshots/hirehelper.png)
-
-The platform provides a clean and intuitive interface where users can easily navigate between task management, requests, and notifications.
+It provides a complete workflow:  
+➡️ Task Creation → Request Sending → Accept/Reject → Notifications → Task Management
 
 ---
 
-# 🚀 Features & Milestones
+## 📌 Project Overview
+
+HireHelper allows users to:
+
+- Post tasks with complete details  
+- Browse and request tasks  
+- Manage incoming and outgoing requests  
+- Receive real-time notifications  
+- Update profile and account settings  
+
+📄 Detailed System Design: (Included in project files)
 
 ---
 
-## ✅ Milestone-1: Authentication System
+## 🧩 Core Modules
 
-A secure and reliable authentication system ensuring safe user access and account management.
+- 🔐 Authentication & Profile Management  
+- 📌 Task Posting & Discovery  
+- 🔄 Request Handling System  
+- 🔔 Notification System  
+- 📊 Dashboard & Navigation  
 
-### 🔐 Login Page
+---
+
+## 🚀 Features
+
+---
+
+### 🔐 Authentication System
 
 ![Login](./screenshots/login.png)
 
-### ✨ Features
-
-* User registration with validation
-* Strong password enforcement
-* Email OTP verification system
-* Resend OTP functionality
-* Secure login using JWT authentication
-* Protected routes for dashboard access
-* Toast notifications for all user actions
+- User Registration & Login  
+- Email OTP Verification (Nodemailer)  
+- JWT Authentication  
+- Protected Routes  
+- Toast Notifications  
 
 ---
 
-## ✅ Milestone-2: Task Management & Feed System
-
-This milestone focuses on core platform functionality — task creation and task discovery.
-
----
-
-### 📌 Create Task
-
-Users can create tasks by providing all necessary details including time, location, and optional image.
-
-![Add Task](./screenshots/addTask.png)
-
-#### Features:
-
-* Task title and description
-* Location input
-* Start & end date/time selection
-* Optional image upload (Cloudinary integration)
-* Clean form UI
-
----
-
-### 📰 Task Feed
-
-Displays all available tasks posted by users.
-
-![Feed](./screenshots/feed.png)
-
-#### Features:
-
-* Responsive grid layout
-* Task cards with details
-* Request button for each task
-* Proper date & time formatting
-* Clean UI with icons
-
----
-
-### 📊 Dashboard Layout
-
-Centralized dashboard for smooth navigation.
+### 📊 Dashboard
 
 ![Dashboard](./screenshots/dashboard.png)
 
-#### Features:
-
-* Sidebar navigation
-* Header with search bar
-* Notification icon
-* Clean and minimal layout
+- Sidebar Navigation  
+- Search Bar  
+- Notification Icon  
+- Clean UI Layout  
 
 ---
 
-### 📌 My Tasks
+### 📌 Task Management
 
-Users can view and manage their created tasks.
+#### ➕ Add Task
+
+![Add Task](./screenshots/addTask.png)
+
+- Title & Description  
+- Location & Time Selection  
+- Optional Image Upload (Cloudinary)  
+- Clean Form UI  
+
+---
+
+#### 📰 Task Feed
+
+![Feed](./screenshots/feed.png)
+
+- View all tasks  
+- Request button  
+- Responsive UI  
+- Time & location display  
+
+---
+
+#### 📁 My Tasks
 
 ![My Tasks](./screenshots/myfeed.png)
 
-#### Features:
-
-* Task cards with image support
-* Image fallback (blue background with task title)
-* Location & time display
-* Organized layout
+- View created tasks  
+- Image support  
+- Organized layout  
 
 ---
 
-## ✅ Milestone-3: Request System & Notifications
+### 🔄 Request System
 
-This milestone introduces interaction between users through requests and real-time updates.
-
----
-
-### 🔄 Incoming Requests
-
-Users receive requests from others for their posted tasks.
+#### 📥 Incoming Requests
 
 ![Requests](./screenshots/request.png)
 
-#### Features:
-
-* View all incoming requests
-* Accept / Reject actions
-* Request details with user info
-* Status indicators
+- Accept / Reject requests  
+- User details  
+- Status updates  
 
 ---
 
-### 📤 My Requests
-
-Users can track the requests they have sent.
+#### 📤 My Requests
 
 ![My Requests](./screenshots/myRequest.png)
 
-#### Features:
-
-* Status tracking (pending / accepted / rejected)
-* Task details inside request
-* Clean card UI
-* Real-time updates
+- Track sent requests  
+- Status (Pending / Accepted / Rejected)  
 
 ---
 
-### 🔔 Notifications System
-
-Keeps users informed about important activities.
+### 🔔 Notifications
 
 ![Notifications](./screenshots/notification.png)
 
-#### Features:
-
-* Notifications for:
-
-  * New request received
-  * Request accepted
-* Dropdown notification panel
-* Unread badge indicator
-* Mark as read functionality
-* Smooth navigation on click
+- New request alerts  
+- Accept/Reject updates  
+- Unread badge  
+- Mark as read  
 
 ---
 
-### ⚙️ Core Functional Highlights
+### ⚙️ Settings
 
-* Prevent duplicate requests
-* Cannot request own task
-* Automatic UI updates
-* Toast notifications instead of alerts
-* Consistent UI across all pages
+![Settings](./screenshots/settings.png)
+
+- Update profile info  
+- Change password  
+- Profile picture upload  
+- Account management  
 
 ---
 
-# 🔗 API Endpoints
+## 🔗 API Endpoints
 
 ### 🔹 Tasks
 
-* `POST /api/tasks/create` → Create task
-* `GET /api/tasks/allTasks` → Get all tasks
-* `GET /api/tasks/myTask` → Get user tasks
+- `POST /api/tasks/create`  
+- `GET /api/tasks/allTasks`  
+- `GET /api/tasks/myTask`  
 
 ### 🔹 Requests
 
-* `POST /api/requests/send`
-* `GET /api/requests/received`
-* `GET /api/requests/myRequests`
-* `PUT /api/requests/accept/:id`
-* `PUT /api/requests/reject/:id`
+- `POST /api/requests/send`  
+- `GET /api/requests/received`  
+- `GET /api/requests/myRequests`  
+- `PUT /api/requests/accept/:id`  
+- `PUT /api/requests/reject/:id`  
 
 ### 🔹 Notifications
 
-* `GET /api/notifications`
-* `PUT /api/notifications/read/:id`
+- `GET /api/notifications`  
+- `PUT /api/notifications/read/:id`  
 
 ---
 
-# 🛠️ Tech Stack
+## 🛠️ Tech Stack
 
-## Frontend
+### Frontend
 
-* React.js
-* Tailwind CSS
-* React Router DOM
-* Axios
-* React Toastify
-* React Icons
+- React.js  
+- Tailwind CSS  
+- React Router DOM  
+- Axios  
+- React Toastify  
+- React Icons  
 
-## Backend
+### Backend
 
-* Node.js
-* Express.js
-* MongoDB
-* Mongoose
-* JWT Authentication
-* Nodemailer
-* Cloudinary
-* Express FileUpload
+- Node.js  
+- Express.js  
+- MongoDB  
+- Mongoose  
+- JWT Authentication  
+- Nodemailer  
+- Cloudinary  
+- Express FileUpload  
 
 ---
 
-# 📁 Folder Structure
+## 📁 Folder Structure
 
-```
+
 HireHelper/
 │
 ├── frontend/
-│   ├── components/
-│   ├── pages/
-│   ├── services/
-│   └── App.jsx
+│ ├── components/
+│ ├── pages/
+│ ├── services/
+│ └── App.jsx
 │
 ├── backend/
-│   ├── controllers/
-│   ├── routes/
-│   ├── models/
-│   ├── middleware/
-│   └── utils/
+│ ├── controllers/
+│ ├── routes/
+│ ├── models/
+│ ├── middleware/
+│ └── utils/
 │
 ├── screenshots/
-```
+
 
 ---
 
-# ⚙️ Installation & Setup
+## ⚙️ Installation & Setup
 
 ### 1️⃣ Clone Repository
 
 ```bash
-git clone https://github.com/springboard-mentor-batch13/HireHelper-Batch3.git
-cd HireHelper-Batch3
-```
-
----
-
-### 2️⃣ Backend Setup
-
-```bash
+git clone https://github.com/your-username/HireHelper.git
+cd HireHelper
+2️⃣ Backend Setup
 cd backend
 npm install
 npm run dev
-```
-
----
-
-### 3️⃣ Frontend Setup
-
-```bash
+3️⃣ Frontend Setup
 cd frontend
 npm install
 npm run dev
-```
+🔐 Environment Variables
 
----
+Create .env file in backend:
 
-# 🔐 Environment Variables
-
-Create `.env` file in backend:
-
-```
 MONGODB_URL=your_mongodb_url
 PORT=4000
 
@@ -287,25 +232,21 @@ JWT_SECRET=your_secret
 MAIL_USER=your_email
 MAIL_PASS=your_email_password
 
-CLOUD_NAME=your_name
-API_KEY=your_key
-API_SECRET=your_secret
-```
+CLOUD_NAME=your_cloud_name
+API_KEY=your_api_key
+API_SECRET=your_api_secret
+🚧 Project Status
 
----
+✅ Authentication System
+✅ Task Management
+✅ Request System
+✅ Notifications
+✅ Settings Page
 
-# 🚧 Current Status
+🎉 Project Completed Successfully
 
-✔ Milestone-1 Completed
-✔ Milestone-2 Completed
-✔ Milestone-3 Completed
-
-🚀 Currently working on **Milestone-4 (Advanced Features & Enhancements)**
-
----
-
-## 📄 License
-
-This project is open-source and available for learning and development purposes.
-
----
+💡 Future Enhancements
+Real-time chat between users
+Payment integration
+Task rating & reviews
+Advanced filtering & search
