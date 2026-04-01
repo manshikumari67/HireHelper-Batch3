@@ -5,7 +5,7 @@ HireHelper is a **full-stack web application** that connects users who need help
 It provides a complete workflow:  
 ➡️ Task Creation → Request Sending → Accept/Reject → Notifications → Task Management
 
-![LandingPage](./screenshots/HireHelper.png)
+![LandingPage](./screenshots/HireHelperLandingPage.png)
 
 ---
 
@@ -51,7 +51,7 @@ HireHelper allows users to:
 
 ### 📊 Dashboard
 
-![Dashboard](./screenshots/DashBoard.png)
+![Dashboard](./screenshots/DashBoardHeader.png)
 
 - Sidebar Navigation  
 - Search Bar  
@@ -64,7 +64,7 @@ HireHelper allows users to:
 
 #### ➕ Add Task
 
-![Add Task](./screenshots/AddTask.png)
+![Add Task](./screenshots/PostTaskPage.png)
 
 - Title & Description  
 - Location & Time Selection  
@@ -75,7 +75,7 @@ HireHelper allows users to:
 
 #### 📰 Task Feed
 
-![Feed](./screenshots/Feed.png)
+![Feed](./screenshots/GetFeed.png)
 
 - View all tasks  
 - Request button  
@@ -86,7 +86,7 @@ HireHelper allows users to:
 
 #### 📁 My Tasks
 
-![My Tasks](./screenshots/MyTasks.png)
+![My Tasks](./screenshots/MyTasksPage.png)
 
 - View created tasks  
 - Image support  
@@ -98,7 +98,7 @@ HireHelper allows users to:
 
 #### 📥 Incoming Requests
 
-![Requests](./screenshots/Request.png)
+![Requests](./screenshots/RequestPage.png)
 
 - Accept / Reject requests  
 - User details  
@@ -108,7 +108,7 @@ HireHelper allows users to:
 
 #### 📤 My Requests
 
-![My Requests](./screenshots/MyRequest.png)
+![My Requests](./screenshots/MyRequestPage.png)
 
 - Track sent requests  
 - Status (Pending / Accepted / Rejected)  
@@ -117,7 +117,7 @@ HireHelper allows users to:
 
 ### 🔔 Notifications
 
-![Notifications](./screenshots/Notification.png)
+![Notifications](./screenshots/NotificationPage.png)
 
 - New request alerts  
 - Accept/Reject updates  
@@ -128,7 +128,7 @@ HireHelper allows users to:
 
 ### ⚙️ Settings
 
-![Settings](./screenshots/Settings.png)
+![Settings](./screenshots/SettingsPAge.png)
 
 - Update profile info  
 - Change password  
