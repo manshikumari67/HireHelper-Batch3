@@ -1,14 +1,13 @@
 import { useState, useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import API from "../services/api";
 import OTPInput from "react-otp-input";
 import { toast } from "react-toastify";
 
 export default function Verify() {
-  const location = useLocation();
   const navigate = useNavigate();
 
-  const email = location.state?.email;
+  const email = localStorage.getItem("verifyEmail");
 
   const [otp, setOtp] = useState("");
   const [loading, setLoading] = useState(false);
@@ -39,7 +38,7 @@ export default function Verify() {
       });
 
       toast.success(response.data.message || "Verified successfully");
-
+      localStorage.removeItem("verifyEmail");
       navigate("/login");
 
     } catch (error) {

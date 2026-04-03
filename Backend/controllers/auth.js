@@ -4,6 +4,7 @@ const Request = require("../models/Request");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const mailSender = require("../utils/mailSender");
+const crypto = require("crypto");
 
 // ================== REGISTER ==================
 exports.register = async (req, res) => {
@@ -16,7 +17,7 @@ exports.register = async (req, res) => {
         message: "All fields are required",
       });
     }
-
+    
     const existingUser = await User.findOne({ email_id });
 
     // Generate OTP

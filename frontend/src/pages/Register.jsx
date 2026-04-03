@@ -17,9 +17,6 @@ export default function Register() {
 
   const [loading, setLoading] = useState(false);
 
-  const passwordRegex =
-    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/;
-
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -72,13 +69,11 @@ export default function Register() {
     console.log("RESPONSE:", response.data);
 
     // 🔥 FIXED LOGIC
-    if (response.data?.success || response.data?.message) {
+    if (response.data?.success) {
       toast.success(response.data.message || "OTP sent successfully");
-
+      localStorage.setItem("verifyEmail", formData.email);
       // 👉 IMPORTANT: navigate always after success
-      navigate("/verify", {
-        state: { email: formData.email },
-      });
+      navigate("/verify-otp");
     } else {
       toast.error(response.data?.message || "Something went wrong");
     }

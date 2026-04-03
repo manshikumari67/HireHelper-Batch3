@@ -47,7 +47,7 @@ function App() {
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/verify" element={<VerifyOTP />} />
+        <Route path="/verify-otp" element={<VerifyOTP />} />
 
         {/* 🔥 DASHBOARD */}
         <Route
